@@ -199,7 +199,6 @@
         .stat-bar-bg { background: #EDF2F7; height: 6px; border-radius: 3px; margin-top: 4px; overflow: hidden; }
         .stat-bar-fill { background: var(--secondary-color); height: 100%; border-radius: 3px; }
 
-        /* 케미스트리(짝꿍) 섹션 스타일 수정 */
         .chemistry-section {
             background-color: #fcfcfc;
             border: 1px dashed #CBD5E0;
@@ -253,7 +252,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* 눈에 보이지 않게 출처 숨김 처리 */
         .hidden-cite { display: none; }
 
         @media (max-width: 480px) {
@@ -313,7 +311,7 @@
         <div id="stats-container"></div>
     </div>
 
-    <!-- 4. 환상의 짝꿍 (가장 아래로 이동) -->
+    <!-- 4. 환상의 짝꿍 -->
     <div class="chemistry-section fade-in" id="chemistry-section">
         <div class="stat-title" style="margin-bottom: 15px;">👀 재미로 보는 직무 케미</div>
         <div class="chemistry-container" id="chemistry-container"></div>
@@ -325,18 +323,102 @@
 
 <script>
     const questions = [
-        { q: "Q1. 당신이 업무를 할 때 가장 스트레스를 받거나 피하고 싶은 상황은?", options: [ { text: "숫자가 1원이라도 틀리거나 계산/데이터 오류가 생기는 상황", type: "Comp" }, { text: "갈등이나 불만이 쌓여 전반적인 직원 경험(EX)이 훼손되는 상황", type: "OD" }, { text: "비즈니스 방향성과 HR 제도가 엇박자를 내어 성장을 저해하는 상황", type: "HRBP" } ] },
-        { q: "Q2. 사내에 새로운 인사 제도를 도입해야 합니다. 당신의 접근 방식은?", options: [ { text: "노동부 지침, 취업규칙 등과의 정합성을 검토하고 요건을 준수한다.", type: "ER_LR" }, { text: "학습 동기부여 이론을 바탕으로 자율적인 학습 환경을 설계한다.", type: "HRD" }, { text: "조직에 필요한 우수 인재를 적극적으로 소싱하고 어필하는 전략을 짠다.", type: "TA" } ] },
-        { q: "Q3. 사람을 평가하거나 관찰할 때, 당신의 시선이 가장 먼저 머무는 곳은?", options: [ { text: "조직에 필요한 역량을 갖춘 인재인지 발굴하려는 소싱 관점", type: "TA" }, { text: "어떤 지식을 필요로 하고 어떻게 역량을 고도화할지 살피는 육성 관점", type: "HRD" }, { text: "성과와 직급에 맞춰 보상이 공정하고 정확하게 배분되었는지 살피는 분석 관점", type: "Comp" } ] },
-        { q: "Q4. 다수의 이해관계자와 소통할 때, 당신이 가장 자신 있는 역할은?", options: [ { text: "지원자와 현업 부서 사이에서 일정을 조율하고 무결점으로 운영하는 역할", type: "TA" }, { text: "노사관계나 갈등 상황에서 동향을 파악하고 협의 및 타협안을 도출하는 역할", type: "ER_LR" }, { text: "임직원들이 자율적으로 스터디하고 정보를 공유하도록 판을 깔아주는 역할", type: "HRD" } ] },
-        { q: "Q5. 당장 내일 경영진에게 기획안을 제안해야 한다면, 가장 흥미로운 주제는?", options: [ { text: "신사업 기획 단계부터 필요한 인력과 조직 구조를 세팅하는 제안", type: "HRBP" }, { text: "포괄임금제 등에 맞춰 기존의 평가 체계와 근로계약을 리뉴얼하는 제안", type: "ER_LR" }, { text: "핵심 가치를 구성원의 일상 행동 양식에 구조화하기 위한 캠페인 제안", type: "OD" } ] },
-        { q: "Q6. HR 실무자로서 가장 큰 성취감을 느낄 것 같은 순간은?", options: [ { text: "전사 조직 건강도 및 몰입도 서베이 결과가 작년 대비 월등히 개선되었을 때", type: "OD" }, { text: "담당 조직의 성과가 오르며, 파트너로서 비즈니스 성공을 견인했을 때", type: "HRBP" }, { text: "단체교섭이나 갈등 상황에서 경영 목표에 맞게 안정적인 합의를 이끌어냈을 때", type: "ER_LR" } ] },
-        { q: "Q7. HR 데이터를 다룬다면 어떤 목적과 방식이 가장 편안한가?", options: [ { text: "급여, 시장 데이터를 해석하여 인센티브 재원을 정확히 산정하기 위해", type: "Comp" }, { text: "정성적 분위기를 eNPS, 이탈률 등 정량적 데이터와 결합해 시각화하기 위해", type: "OD" }, { text: "교육 만족도 등 교육 효과성 데이터를 통계적으로 검증하고 개선하기 위해", type: "HRD" } ] },
-        { q: "Q8. 업무 중 예기치 못한 돌발 상황이 발생했을 때, 당신의 대응은?", options: [ { text: "면접관 불참 등 프로세스 이슈에 유연하고 빠르게 플랜 B로 대처한다.", type: "TA" }, { text: "예외적인 세무/법적 이슈 발생 시 규정과 기준에 근거해 논리적으로 대응한다.", type: "Comp" }, { text: "급변하는 사업 환경에 맞춰 조직과 일하는 방식을 민첩하게 재설계한다.", type: "HRBP" } ] },
-        { q: "Q9. 직무 전문가로 성장하기 위해 가장 강력하게 키우고 싶은 무기는?", options: [ { text: "타인의 마음을 열고 민감한 정보를 매끄럽게 다루는 커뮤니케이션 능력", type: "TA" }, { text: "데이터를 기반으로 맥락을 이해하고 리더들을 논리적으로 설득하는 능력", type: "HRBP" }, { text: "노동법 등 인사제도 전반의 뼈대가 되는 제도적 지식과 컴플라이언스 역량", type: "ER_LR" } ] },
-        { q: "Q10. 팀 프로젝트를 할 때, 당신이 가장 선호하는 역할은?", options: [ { text: "예산을 꼼꼼하게 관리하고 비용을 오류 없이 산정하여 정산하는 총무 역할", type: "Comp" }, { text: "그라운드 룰을 세팅하고 긍정적인 분위기를 디자인하는 역할", type: "OD" }, { text: "프로젝트에 필요한 사람을 적극적으로 섭외하고 영입해 오는 마케터 역할", type: "TA" } ] },
-        { q: "Q11. 시간 날 때 챙겨보고 싶은 아티클이나 스터디 주제는?", options: [ { text: "대기업 통상임금 판례 및 공정인사 지침의 법적 정합성 분석", type: "ER_LR" }, { text: "최신 IT 기술 트렌드와 리딩 기업의 사내 학습 공동체 구축 사례", type: "HRD" }, { text: "고연봉 정책 등 성과 중심의 유연한 보상 문화와 시장 데이터 분석", type: "Comp" } ] },
-        { q: "Q12. 당신이 생각하는 HR의 궁극적인 목적은 무엇인가?", options: [ { text: "채용부터 퇴직까지 HR 전체 사이클을 총괄하는 비즈니스의 전략적 파트너", type: "HRBP" }, { text: "조직 변화의 저항을 줄이고 몰입을 돕는 유연한 문화를 정착시키는 것", type: "OD" }, { text: "요구 분석을 통해 구성원 개개인이 직무 역량을 최고치로 발휘하도록 돕는 것", type: "HRD" } ] }
+        { 
+            q: "Q1. 업무 중 나를 가장 답답하게 만드는 상황은?", 
+            options: [ 
+                { text: "기껏 정리한 데이터나 예산 수치에 치명적인 오류가 발견됐을 때", type: "Comp" }, 
+                { text: "팀원들 사이에 불만이 쌓여서 조직 분위기가 싸해질 때", type: "OD" }, 
+                { text: "회사의 비즈니스 목표와 지금 하는 일의 방향이 전혀 안 맞을 때", type: "HRBP" } 
+            ] 
+        },
+        { 
+            q: "Q2. 조직을 위한 새로운 제도를 기획한다면, 내가 더 집중할 포인트는?", 
+            options: [ 
+                { text: "혹시 모를 리스크나 법적인 문제가 없는지 꼼꼼하게 검토하기", type: "ER_LR" }, 
+                { text: "구성원들이 스스로 동기부여를 얻고 성장할 수 있는 환경 만들기", type: "HRD" }, 
+                { text: "밖에서 봤을 때 매력적인 회사로 보여서 좋은 인재들이 오게 만들기", type: "TA" } 
+            ] 
+        },
+        { 
+            q: "Q3. 동료나 사람을 관찰할 때 나도 모르게 하게 되는 생각은?", 
+            options: [ 
+                { text: "'저 사람은 우리 팀의 부족한 부분을 딱 채워줄 수 있겠는데?'", type: "TA" }, 
+                { text: "'저 사람은 이런 쪽으로 조금만 더 배우면 훨씬 잘하겠는데?'", type: "HRD" }, 
+                { text: "'저 사람이 내는 성과에 비해 적절한 대우와 보상을 받고 있을까?'", type: "Comp" } 
+            ] 
+        },
+        { 
+            q: "Q4. 여러 사람과 소통해야 하는 상황, 내가 가장 빛을 발하는 순간은?", 
+            options: [ 
+                { text: "양측의 일정을 딱딱 맞추고 프로세스를 매끄럽게 굴려갈 때", type: "TA" }, 
+                { text: "서로 입장이 달라서 팽팽할 때, 논리적으로 타협점을 찾아낼 때", type: "ER_LR" }, 
+                { text: "사람들이 모여서 유익한 정보를 나누도록 자연스럽게 판을 깔아줄 때", type: "HRD" } 
+            ] 
+        },
+        { 
+            q: "Q5. 경영진 앞에서 5분간 자유롭게 기획안을 발표한다면?", 
+            options: [ 
+                { text: "내년 신사업을 위해 조직 구조를 이렇게 바꿔야 합니다.", type: "HRBP" }, 
+                { text: "현재 규정상 리스크가 있는 근로계약 방식을 이렇게 고쳐야 합니다.", type: "ER_LR" }, 
+                { text: "우리 회사의 핵심 가치를 일상에 녹일 수 있는 캠페인을 합시다.", type: "OD" } 
+            ] 
+        },
+        { 
+            q: "Q6. 실무자로서 일할 때 '나 진짜 일 잘했다'라며 뿌듯할 것 같은 순간은?", 
+            options: [ 
+                { text: "우리 팀원들의 표정이 밝아지고 조직 분위기가 눈에 띄게 좋아졌을 때", type: "OD" }, 
+                { text: "내가 속한 조직이 목표했던 비즈니스 성과를 시원하게 달성했을 때", type: "HRBP" }, 
+                { text: "모두가 예민해하는 갈등 상황을 깔끔하고 안전하게 합의로 끝냈을 때", type: "ER_LR" } 
+            ] 
+        },
+        { 
+            q: "Q7. 복잡한 엑셀 데이터를 마주했을 때, 내가 하고 싶은 분석은?", 
+            options: [ 
+                { text: "그래서 이번 달 정확한 예산과 인센티브 분배 금액이 얼마지?", type: "Comp" }, 
+                { text: "이 데이터로 우리 조직의 전반적인 분위기와 퇴사율을 어떻게 설명하지?", type: "OD" }, 
+                { text: "지난번에 진행한 프로그램이 정말 효과가 있었는지 수치로 검증해 볼까?", type: "HRD" } 
+            ] 
+        },
+        { 
+            q: "Q8. 일하다가 갑자기 예상치 못한 돌발 상황이 터졌다면 나의 반응은?", 
+            options: [ 
+                { text: "'괜찮아, 안 되면 이렇게 하면 되지!' 재빠르게 플랜 B를 가동한다.", type: "TA" }, 
+                { text: "'잠깐, 규정부터 확인하자.' 기준을 찾아보고 논리적으로 대응한다.", type: "Comp" }, 
+                { text: "'상황이 바뀌었네?' 바뀐 환경에 맞춰 기존 계획을 통째로 엎고 다시 짠다.", type: "HRBP" } 
+            ] 
+        },
+        { 
+            q: "Q9. 직무 전문가로 성장하기 위해 내가 가장 갖고 싶은 '무기'는?", 
+            options: [ 
+                { text: "누구든 마음을 열게 만들고 껄끄러운 말도 유연하게 해내는 '말솜씨'", type: "TA" }, 
+                { text: "복잡한 맥락을 데이터로 정리해서 리더들의 고개를 끄덕이게 하는 '설득력'", type: "HRBP" }, 
+                { text: "어떤 공격이 들어와도 완벽하게 방어할 수 있는 탄탄한 '법률/제도 지식'", type: "ER_LR" } 
+            ] 
+        },
+        { 
+            q: "Q10. 팀 프로젝트를 할 때, 내가 자연스럽게 맡게 되는 포지션은?", 
+            options: [ 
+                { text: "'회비 관리는 내가 할게!' 돈과 일정을 꼼꼼하게 챙기는 총무 역할", type: "Comp" }, 
+                { text: "'우리 이런 규칙 정하고 재밌게 해보자!' 팀 분위기를 이끄는 치어리더 역할", type: "OD" }, 
+                { text: "'이건 그 선배한테 물어볼게!' 필요한 사람을 섭외해 오는 마당발 역할", type: "TA" } 
+            ] 
+        },
+        { 
+            q: "Q11. 주말에 커피를 마시며 여유롭게 읽고 싶은 아티클 제목은?", 
+            options: [ 
+                { text: "최근 대기업 근로계약 판례 분석과 기업의 대응 방안", type: "ER_LR" }, 
+                { text: "요즘 잘나가는 기업들은 직원들을 어떻게 성장시킬까?", type: "HRD" }, 
+                { text: "실력주의 시대, 성과 중심의 압도적 연봉 테이블 설계법", type: "Comp" } 
+            ] 
+        },
+        { 
+            q: "Q12. 내가 생각하는 가장 이상적인 인사담당자의 모습은?", 
+            options: [ 
+                { text: "경영진과 어깨를 나란히 하며 비즈니스의 성공을 함께 이끄는 '전략가'", type: "HRBP" }, 
+                { text: "팍팍한 회사 생활 속에서 구성원들이 웃으며 일할 수 있게 만드는 '분위기 메이커'", type: "OD" }, 
+                { text: "구성원들이 자신의 한계를 깨고 최고의 에이스로 성장하도록 돕는 '페이스메이커'", type: "HRD" } 
+            ] 
+        }
     ];
 
     const resultsData = {
@@ -344,43 +426,43 @@
             title: "채용 (TA)", emoji: "🎯",
             desc: "사업과 조직 운영에 필요한 핵심 인재를 발굴하고 체계적으로 이끄는 마케터입니다.<span class='hidden-cite'>[cite: 1]</span>",
             action: "✅ <b>스펙:</b> 퍼포먼스 마케팅 기초, 링크드인 활용<br>✅ <b>경험:</b> 커피챗 제안, 학회 리크루팅 기획",
-            chemGood: { name: "HRBP", reason: "신사업 판을 짜면 인재를 쏙쏙 데려오는 완벽한 공격수 조합!<span class='hidden-cite'>[cite: 1, 3]</span>" },
+            chemGood: { name: "HRBP", reason: "신사업 판을 짜면 인재를 쏙쏙 데려오는 완벽한 공격수 조합!<span class='hidden-cite'>[cite: 1]</span>" },
             chemBad: { name: "보상(Comp)", reason: "A급 인재 연봉 인상(채용) vs 정해진 예산과 기준 사수(보상)의 창과 방패<span class='hidden-cite'>[cite: 1]</span>" }
         },
         "Comp": {
             title: "보상 (Compensation)", emoji: "💰",
             desc: "급여 및 세무 기준에 맞춰 정확한 보상을 산정하는 정교한 제도 설계자입니다.<span class='hidden-cite'>[cite: 1]</span>",
             action: "✅ <b>스펙:</b> 컴활 1급, 엑셀 고급 수식 마스터<br>✅ <b>경험:</b> 회비 예산안 기획/정산, 연봉 구조 스터디",
-            chemGood: { name: "인사노무(ER)", reason: "감정보다 팩트와 데이터를 중시하여 말이 제일 잘 통함!<span class='hidden-cite'>[cite: 1, 2]</span>" },
+            chemGood: { name: "인사노무(ER)", reason: "감정보다 팩트와 데이터를 중시하여 말이 제일 잘 통함!<span class='hidden-cite'>[cite: 1]</span>" },
             chemBad: { name: "채용(TA)", reason: "예산을 방어하려는 보상팀과 연봉을 얹어주려는 채용팀의 대립<span class='hidden-cite'>[cite: 1]</span>" }
         },
         "ER_LR": {
             title: "인사노무 (ER/LR)", emoji: "⚖️",
-            desc: "노동법 기반으로 절차를 준수하며 조직 갈등을 중재하는 든든한 원칙주의자입니다.<span class='hidden-cite'>[cite: 2]</span>",
+            desc: "노동법 기반으로 절차를 준수하며 조직 갈등을 중재하는 든든한 원칙주의자입니다.<span class='hidden-cite'></span>",
             action: "✅ <b>스펙:</b> 공인노무사 1차(노동법), ERP 인사<br>✅ <b>경험:</b> 갈등 중재, 공정인사 지침 분석 스터디",
-            chemGood: { name: "보상(Comp)", reason: "법적 기준과 절차를 가장 중요하게 생각하는 완벽한 실무 콤비!<span class='hidden-cite'>[cite: 1, 2]</span>" },
-            chemBad: { name: "조직문화(OD)", reason: "엄격한 규정과 통제(노무) vs 자율적이고 유연한 넷플릭스식 문화(조직문화)<span class='hidden-cite'>[cite: 2, 4]</span>" }
+            chemGood: { name: "보상(Comp)", reason: "법적 기준과 절차를 가장 중요하게 생각하는 완벽한 실무 콤비!<span class='hidden-cite'>[cite: 1]</span>" },
+            chemBad: { name: "조직문화(OD)", reason: "엄격한 규정과 통제(노무) vs 자율적이고 유연한 넷플릭스식 문화(조직문화)<span class='hidden-cite'></span>" }
         },
         "HRBP": {
             title: "HRBP", emoji: "♟️",
-            desc: "사업 이해를 바탕으로 리더십 그룹과 전략을 수립해 비즈니스를 견인하는 파트너입니다.<span class='hidden-cite'>[cite: 3]</span>",
+            desc: "사업 이해를 바탕으로 리더십 그룹과 전략을 수립해 비즈니스를 견인하는 파트너입니다.<span class='hidden-cite'></span>",
             action: "✅ <b>스펙:</b> SQL 등 HR 데이터 분석, 퍼실리테이션<br>✅ <b>경험:</b> 조직 문제점 진단 및 팀 R&R 정밀 설계",
-            chemGood: { name: "채용(TA)", reason: "비즈니스를 위해 조직을 세팅하면 즉각 인재를 수혈하는 티키타카!<span class='hidden-cite'>[cite: 1, 3]</span>" },
-            chemBad: { name: "교육(HRD)", reason: "당장 이번 분기의 빠른 성과(HRBP) vs 중장기적인 역량 육성(교육)<span class='hidden-cite'>[cite: 3, 4]</span>" }
+            chemGood: { name: "채용(TA)", reason: "비즈니스를 위해 조직을 세팅하면 즉각 인재를 수혈하는 티키타카!<span class='hidden-cite'>[cite: 1]</span>" },
+            chemBad: { name: "교육(HRD)", reason: "당장 이번 분기의 빠른 성과(HRBP) vs 중장기적인 역량 육성(교육)<span class='hidden-cite'></span>" }
         },
         "HRD": {
             title: "교육 (HRD)", emoji: "🌱",
-            desc: "커리큘럼을 설계하고 자율적인 지식 공유 환경을 기획하여 성장을 돕는 페이스메이커입니다.<span class='hidden-cite'>[cite: 4]</span>",
+            desc: "커리큘럼을 설계하고 자율적인 지식 공유 환경을 기획하여 성장을 돕는 페이스메이커입니다.<span class='hidden-cite'></span>",
             action: "✅ <b>스펙:</b> 노션 지식 관리 시스템 구축, PPT 시각화<br>✅ <b>경험:</b> 세미나 커리큘럼 기획 및 사내 강사 발표",
-            chemGood: { name: "조직문화(OD)", reason: "사람의 긍정적인 경험과 성장을 중시하여 기획 회의할 때 쿵짝이 맞음!<span class='hidden-cite'>[cite: 4]</span>" },
-            chemBad: { name: "HRBP", reason: "중장기적 관점의 역량 육성(교육) vs 당장의 민첩한 사업 성과(HRBP)<span class='hidden-cite'>[cite: 3, 4]</span>" }
+            chemGood: { name: "조직문화(OD)", reason: "사람의 긍정적인 경험과 성장을 중시하여 기획 회의할 때 쿵짝이 맞음!<span class='hidden-cite'></span>" },
+            chemBad: { name: "HRBP", reason: "중장기적 관점의 역량 육성(교육) vs 당장의 민첩한 사업 성과(HRBP)<span class='hidden-cite'></span>" }
         },
         "OD": {
             title: "조직문화 (OD)", emoji: "🎨",
-            desc: "핵심 가치를 전파하고 긍정적인 직원 경험(EX)을 디자인하는 매력적인 컬처 빌더입니다.<span class='hidden-cite'>[cite: 4]</span>",
+            desc: "핵심 가치를 전파하고 긍정적인 직원 경험(EX)을 디자인하는 매력적인 컬처 빌더입니다.<span class='hidden-cite'></span>",
             action: "✅ <b>스펙:</b> 사조사 2급, 사내 커뮤니케이션 기획<br>✅ <b>경험:</b> 몰입도 서베이 분석, 그라운드 룰 제정",
-            chemGood: { name: "교육(HRD)", reason: "직원들에 대한 애정을 바탕으로 시너지를 내는 최고의 기획 파트너!<span class='hidden-cite'>[cite: 4]</span>" },
-            chemBad: { name: "인사노무(ER)", reason: "자율적이고 유연한 문화 지향(조직문화) vs 리스크 방지를 위한 통제(노무)<span class='hidden-cite'>[cite: 2, 4]</span>" }
+            chemGood: { name: "교육(HRD)", reason: "직원들에 대한 애정을 바탕으로 시너지를 내는 최고의 기획 파트너!<span class='hidden-cite'></span>" },
+            chemBad: { name: "인사노무(ER)", reason: "자율적이고 유연한 문화 지향(조직문화) vs 리스크 방지를 위한 통제(노무)<span class='hidden-cite'></span>" }
         }
     };
 
